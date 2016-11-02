@@ -71,6 +71,20 @@
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>jetty-maven-plugin</artifactId>
                         <version>${jetty.version}</version>
+						<!-- added this as when running jetty 9 on java 8 using the maven jetty plugin, there were issues for jetty to come up  -->
+						<dependencies>
+							<dependency>
+								<groupId>org.ow2.asm</groupId>
+								<artifactId>asm</artifactId>
+								<version>5.0.2</version>
+							</dependency>
+							<dependency>
+								<groupId>org.ow2.asm</groupId>
+								<artifactId>asm-commons</artifactId>
+								<version>5.0.2</version>
+							</dependency>
+						</dependencies>
+						<!-- till here asm jetty dependencies -->
                         <configuration>
                         	<webApp>
 								<contextPath>/iot-trucking-app</contextPath>
@@ -159,12 +173,6 @@
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-simple</artifactId>				
 				</exclusion>
-				<!-- commenting out the following because whents it including when starting jetty, it goes into infitinite loop scanning for annotations --> 
-				<exclusion>
-					<groupId>com.hortonworks.registries</groupId>
-					<artifactId>schema-registry-serdes</artifactId>
-				</exclusion>
-				 
 			</exclusions>
 		</dependency>	
 		

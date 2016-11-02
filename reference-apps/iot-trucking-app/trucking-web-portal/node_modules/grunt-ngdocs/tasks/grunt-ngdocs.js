@@ -12,7 +12,8 @@ var reader = require('../src/reader.js'),
     vm = require('vm');
 
 var repohosts = [
-  { re: /https?:\/\/github.com\/([^\/]+\/[^\/]+)|git@github.com:(.*)\.git/,
+  { re: /https?:\/\/github.com\/([^\/]+\/[^\/]+)|git@github.com:(.*)/,
+    reSuffix: /\.git.*$/,
     sourceLink: 'https://github.com/{{repo}}/blob/{{sha}}/{{file}}#L{{codeline}}',
     editLink: 'https://github.com/{{repo}}/edit/master/{{file}}'
   }
@@ -20,6 +21,7 @@ var repohosts = [
 
 module.exports = function(grunt) {
   var _ = grunt.util._,
+      unittest = {},
       templates = path.resolve(__dirname, '../src/templates');
 
   grunt.registerMultiTask('ngdocs', 'build documentation', function() {
@@ -35,7 +37,8 @@ module.exports = function(grunt) {
           html5Mode: false,
           editExample: true,
           sourceLink: true,
-          editLink: true
+          editLink: true,
+          inlinePartials: false
         }),
         section = this.target === 'all' ? 'api' : this.target,
         setup;
@@ -45,6 +48,9 @@ module.exports = function(grunt) {
     var gruntScriptsFolder = 'grunt-scripts';
     var gruntStylesFolder = 'grunt-styles';
 
+  	// If the options.script is an array of arrays ( useful when working with variables, for example: ['<%= vendor_files %>','<%= app_files %>'] )
+  	// convert to a single array with _.flatten ( http://underscorejs.org/#flatten )
+  	options.scripts = _.flatten(options.scripts);
     options.scripts = _.map(options.scripts, function(file) {
       if (file === 'angular.js') {
         return 'js/angular.min.js';
@@ -115,6 +121,10 @@ module.exports = function(grunt) {
 
     writeSetup(setup);
 
+    if (options.inlinePartials) {
+      inlinePartials(path.resolve(options.dest, 'index.html'), path.resolve(options.dest, 'partials'));
+    }
+
     grunt.log.writeln('DONE. Generated ' + reader.docs.length + ' pages in ' + (now()-start) + 'ms.');
     done();
   });
@@ -153,7 +163,10 @@ module.exports = function(grunt) {
       repohosts.some(function(host) {
         var match = url.match(host.re);
         if (match) {
-          values.repo = match[1];
+          values.repo = match[1] || match[2];
+          if (host.reSuffix) {
+            values.repo = values.repo.replace(host.reSuffix, '');
+          }
           if (host.sourceLink && options.sourceLink === true) {
             options.sourceLink = host.sourceLink;
           }
@@ -167,6 +180,8 @@ module.exports = function(grunt) {
     options.sourceLink = makeLinkFn(options.sourceLink, values);
     options.editLink = makeLinkFn(options.editLink, values);
   }
+
+  unittest.prepareLinks = prepareLinks;
 
   function prepareSetup(section, options) {
     var setup, data, context = {},
@@ -203,10 +218,11 @@ module.exports = function(grunt) {
           imageLink: options.imageLink,
           bestMatch: options.bestMatch,
           deferLoad: !!options.deferLoad
-        };
+        },
+        template = options.template ? options.template : path.resolve(templates, 'index.tmpl');
 
     // create index.html
-    content = grunt.file.read(path.resolve(templates, 'index.tmpl'));
+    content = grunt.file.read(template);
     content = grunt.template.process(content, {data:data});
     grunt.file.write(path.resolve(options.dest, 'index.html'), content);
 
@@ -232,6 +248,38 @@ module.exports = function(grunt) {
     });
   }
 
+  function inlinePartials(indexFile, partialsFolder) {
+    var indexFolder = path.dirname(indexFile);
+    var partials = grunt.file.expand(partialsFolder + '/**/*.html').map(function(partial){
+      return path.relative(indexFolder, partial);
+    });
+    var html = partials.map(function(partial){
+      // Get the partial content and replace the closing script tags with a placeholder
+      var partialContent = grunt.file.read(path.join(indexFolder, partial))
+        .replace(/<\/script>/g, '<___/script___>');
+      return '<script type="text/ng-template" id="' + partial + '">' + partialContent + '<' + '/script>';
+    }).join('');
+    // During page initialization replace the placeholder back to the closing script tag
+    // @see https://github.com/angular/angular.js/issues/2820
+    html += '<script>(' + (function() {
+      var scripts = document.getElementsByTagName("script");
+      for (var i=0;i<scripts.length;i++) {
+        if (scripts[i].type==='text/ng-template') {
+          scripts[i].innerHTML = scripts[i].innerHTML.replace(/<___\/script___>/g, '</' + 'script>');
+        }
+      }
+    }) + '())</script>';
+    // Inject the html into the ngdoc file
+    var patchedIndex = grunt.file.read(indexFile).replace(/<body[^>]*>/i, function(match) {
+      return match + html;
+    });
+    grunt.file.write(indexFile, patchedIndex);
+    // Remove the partials
+    partials.forEach(function(partial) {
+      grunt.file.delete(path.join(indexFolder, partial));
+    });
+  }
+
   function exists(filepath) {
     return !!grunt.file.exists(filepath);
   }
@@ -245,4 +293,5 @@ module.exports = function(grunt) {
 
   function now() { return new Date().getTime(); }
 
- };
+  return unittest;
+};

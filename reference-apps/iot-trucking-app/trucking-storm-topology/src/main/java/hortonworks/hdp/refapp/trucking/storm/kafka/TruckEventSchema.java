@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class TruckEventSchema extends BaseTruckEventSchema{
 	public List<Object> deserialize(ByteBuffer buffer) {
 		try {
 			String[] pieces = deserializeRawString(buffer);
+
+			//LOG.info("The pieces2 are: " + Arrays.toString(pieces));
 			
 			Timestamp eventTime = Timestamp.valueOf(pieces[0]);
 			String streamSource = pieces[1];
@@ -48,6 +51,7 @@ public class TruckEventSchema extends BaseTruckEventSchema{
 			return new Values(driverId, truckId, eventTime, eventType, longitude, latitude, eventKey, correlationId, driverName, routeId, routeName);
 			
 		} catch (Exception e) {
+			LOG.error(buffer.toString());
 			LOG.error("Error serializeing truck event in Kafka Spout",  e);
 			return null;
 		}

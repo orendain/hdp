@@ -47,13 +47,13 @@ public class JoinStreamsBolt extends BaseWindowedBolt {
 		
 		Map<TruckDriver, List<TruckSpeedEvent>> truckDriversTruckSpeedEvents = new HashMap<TruckDriver, List<TruckSpeedEvent>>();
 		
-		/* Iterate through each of the tuples from teh 2 sources and group by truck and driver */
+		/* Iterate through each of the tuples from the 2 sources and group by truck and driver */
 		for(Tuple tuple: tuplesInWindow) {
 			
 			int truckId = tuple.getIntegerByField("truckId");
 			int driverId = tuple.getIntegerByField("driverId");
 			
-			TruckDriver truckDriver = new TruckDriver(driverId, null, truckId, null );
+			TruckDriver truckDriver = new TruckDriver(driverId, null, truckId, null);
 			
 			String sourceComponent = tuple.getSourceComponent();
 			if("Truck-Events-Stream".equals(sourceComponent)) {
@@ -88,6 +88,14 @@ public class JoinStreamsBolt extends BaseWindowedBolt {
 										truckEvent.latitude, truckEvent.eventKey, truckEvent.correlationId, 
 										truckEvent.driverName, truckEvent.routeId, truckEvent.routeName);
 				collector.emit(values);
+
+				if (!truckEvent.eventType.equals("Normal")) {
+					values = new Values(truckEvent.driverId, truckEvent.truckId, truckEvent.eventTime,
+							truckEvent.eventType, truckEvent.speed, truckEvent.longitude,
+							truckEvent.latitude, truckEvent.eventKey, truckEvent.correlationId,
+							truckEvent.driverName, truckEvent.routeId, truckEvent.routeName);
+					collector.emit("Non-Normal-Events", values);
+				}
 			}
 						
 		}
@@ -209,11 +217,12 @@ public class JoinStreamsBolt extends BaseWindowedBolt {
 	
 	 @Override
 	 public void declareOutputFields(OutputFieldsDeclarer declarer) {
-	        
 		declarer.declare(new Fields("driverId", "truckId", "eventTime", "eventType", "truckSpeed", 
 									"longitude","latitude", "eventKey", "correlationId", 
 									"driverName", "routeId", "routeName"));
-	    
+		 declarer.declareStream("Non-Normal-Events", new Fields("driverId", "truckId", "eventTime", "eventType", "truckSpeed",
+				 "longitude","latitude", "eventKey", "correlationId",
+				 "driverName", "routeId", "routeName"));
 	 }	
 
 	 

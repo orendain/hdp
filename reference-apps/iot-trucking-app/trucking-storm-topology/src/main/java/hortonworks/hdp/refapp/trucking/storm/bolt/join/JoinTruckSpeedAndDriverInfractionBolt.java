@@ -49,7 +49,7 @@ public class JoinTruckSpeedAndDriverInfractionBolt extends BaseWindowedBolt {
 		LOG.info("In Join for Infraction And Speed, window size is: " + tuplesInWindow.size());
 		
 		for(Tuple tuple: tuplesInWindow) {
-			
+
 		
 			TruckDriver truckDriver = (TruckDriver) tuple.getValueByField("truckDriver");
 			
@@ -57,8 +57,8 @@ public class JoinTruckSpeedAndDriverInfractionBolt extends BaseWindowedBolt {
 			if("3-Min-Count-Window".equals(sourceComponent)) {	
 				TruckDriverInfractionDetail truckDriverInfraction = (TruckDriverInfractionDetail) tuple.getValueByField("infractionDetail");
 				truckDriversInfractionDetails.put(truckDriver, truckDriverInfraction);
-				
-				
+
+
 			} else if("5-Min-Sliding-Avg-Speed".equals(sourceComponent)) {
 				
 				Integer averageSpeed = (Integer) tuple.getValueByField("averageSpeed");

@@ -122,6 +122,4 @@ public class TruckConfiguration {
 		LOGGER.debug("Next Driver: " + driver.toString());
 		return driver;		
 	}
-
-
 }

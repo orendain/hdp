@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
 import com.hortonworks.registries.schemaregistry.SchemaCompatibility;
 import com.hortonworks.registries.schemaregistry.SchemaMetadata;
 import com.hortonworks.registries.schemaregistry.SchemaVersion;
@@ -18,8 +19,8 @@ import com.hortonworks.registries.schemaregistry.SerDesInfo;
 import com.hortonworks.registries.schemaregistry.avro.AvroSchemaProvider;
 import com.hortonworks.registries.schemaregistry.client.SchemaRegistryClient;
 
+
 public class TruckSchemaRegistryLoader {
-	
 	
 	static final String TRUCK_SPEED_EVENTS_SCHEMA_NAME = "truck_speed_events_avro";
 	static final String TRUCK_EVENTS_SCHEMA_NAME = "truck_events_avro";
@@ -208,3 +209,4 @@ public class TruckSchemaRegistryLoader {
 		
 
 }
+*/

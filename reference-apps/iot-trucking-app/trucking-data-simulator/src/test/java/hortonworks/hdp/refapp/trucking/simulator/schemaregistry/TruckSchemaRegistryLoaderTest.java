@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import junit.framework.Assert;
 
+/*
 import org.apache.avro.Schema;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.generic.GenericData;
@@ -333,3 +334,4 @@ public class TruckSchemaRegistryLoaderTest {
 		
 	
 }
+*/
