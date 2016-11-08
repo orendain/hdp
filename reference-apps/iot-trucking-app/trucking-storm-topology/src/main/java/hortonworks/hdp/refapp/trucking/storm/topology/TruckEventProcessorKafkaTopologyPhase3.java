@@ -248,6 +248,7 @@ public class TruckEventProcessorKafkaTopologyPhase3 extends BaseTruckEventTopolo
 	private void configureKafkaStoreBolt(TopologyBuilder builder) {
 		// TODO: Specify Kafka producer properties if necessary - http://storm.apache.org/releases/1.0.2/storm-kafka.html
 		// Producer properties for KafkaBolt
+
 		Properties props = new Properties();
 		//props.put("metadata.broker.list", "localhost:9092"); // deprecated
 		//props.put("acks", "1");
@@ -258,7 +259,7 @@ public class TruckEventProcessorKafkaTopologyPhase3 extends BaseTruckEventTopolo
 		//conf.put(KafkaBolt.KAFKA_BROKER_PROPERTIES, props);
 
 		KafkaBolt kafkaStoreBolt = new KafkaBolt()
-				.withTopicSelector(new DefaultTopicSelector("test_topics"))
+				.withTopicSelector(new DefaultTopicSelector("test_topic"))
 				.withTupleToKafkaMapper(new FieldNameBasedTupleToKafkaMapper())
 				.withProducerProperties(props);
 
@@ -330,6 +331,7 @@ public class TruckEventProcessorKafkaTopologyPhase3 extends BaseTruckEventTopolo
 		Config conf = new Config();
 		conf.setDebug(true);
 		conf.setMessageTimeoutSecs(Integer.valueOf(topologyConfig.getProperty("trucking.storm.topology.message.timeout.secs")));
+		conf.setMaxTaskParallelism(1);
 		//conf.put("kafka.broker.properties.bootstrap.servers", topologyConfig.getProperty("kafka.broker.properties.bootstrap.servers"));
 		//conf.put("bootstrap.servers", "sandbox.hortonworks.com:2181");
 		// Disabled above 2 lines ... otherwise get

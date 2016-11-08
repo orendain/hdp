@@ -2,8 +2,9 @@
 /.classpath
 /.project
 /hdp-app-utils.log
-/target
+target/
 /bin
 .idea
 *.iml
 *.DS_Store
+*.log

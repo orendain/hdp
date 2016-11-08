@@ -94,8 +94,5 @@ public class StormService {
 		TruckEventProcessorKafkaTopologyPhase3 truckTopology = new TruckEventProcessorKafkaTopologyPhase3(topologyConfig);
 		StormTopology topology = truckTopology.buildTopology();
 		return topology;
-	}	
-
-
-
+	}
 }

@@ -332,7 +332,7 @@ public class HDPServiceRegistryImpl implements HDPServiceRegistry{
 	 * @param params
 	 * @throws Exception
 	 */
-	private void populateRegistryEndpointsForHBase(AmbariUtils ambariService, ServiceRegistryParams params) throws Exception  {
+	private void  populateRegistryEndpointsForHBase(AmbariUtils ambariService, ServiceRegistryParams params) throws Exception  {
 		
 		DeploymentMode hbaseDeploymentMode = params.getHbaseDeploymentMode();
 		
