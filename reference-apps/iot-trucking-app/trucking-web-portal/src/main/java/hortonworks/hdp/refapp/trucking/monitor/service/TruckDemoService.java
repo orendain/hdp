@@ -118,11 +118,11 @@ public class TruckDemoService {
 					String truckDriverEventKey = driverId + "|" + truckId;
 
 					byte[] XYZ = Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME);
-					LOG.info("a - " + XYZ.toString());
+					LOG.info("a - " + new String(XYZ));
 					byte[] ABC = Bytes.toBytes("eventTime");
-					LOG.info("b - " + ABC.toString());
+					LOG.info("b - " + new String(ABC));
 					byte[] ONE = result.getValue(XYZ, ABC);
-					LOG.info("c - " + ONE.toString());
+					LOG.info("c - " + new String(ONE));
 					LOG.info("d - " + result);
 					long eventTimeLong = Bytes.toLong(ONE);
 
