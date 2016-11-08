@@ -54,6 +54,7 @@ public class TruckDemoService {
 	
 	private static final String DRIVER_EVENTS_TABLE = "driver_dangerous_events";
 	private static String DRIVER_EVENTS_COLUMN_FAMILY_NAME = "events";
+
 	private static final String DRIVER_EVENTS_COUNT_TABLE = "driver_dangerous_events_count";
 	private static String DRIVER_EVENTS_COUNT_COLUMN_FAMILY_NAME = "counters";	
 	
@@ -67,7 +68,6 @@ public class TruckDemoService {
 	
 	
 	private HDPServiceRegistry registry;
-	
 	
 
 	@Autowired
@@ -94,10 +94,14 @@ public class TruckDemoService {
 		HTableInterface driverEventsCountTable = null;
 		
 		try {
+			LOG.debug("Made it here - 0");
 			Configuration config = constructConfiguration();
+			LOG.debug("Made it here - 1");
 			connection = HConnectionManager.createConnection(config);
 			driverEventsTable = connection.getTable(DRIVER_EVENTS_TABLE);
 			driverEventsCountTable = connection.getTable(DRIVER_EVENTS_COUNT_TABLE);
+
+			LOG.debug("Made it here - 2");
 			
 			ResultScanner resultScanner = driverEventsTable.getScanner(Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME));
 			Map<Integer, TruckDriverViolationEvent> eventsMap = new HashMap<Integer, TruckDriverViolationEvent> ();
@@ -111,7 +115,7 @@ public class TruckDemoService {
 					
 					long eventTimeLong = Bytes.toLong(result.getValue(Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME), Bytes.toBytes("eventTime")));
 					SimpleDateFormat sdf = new SimpleDateFormat();
-					String timeStampString = sdf.format(eventTimeLong);	
+					String timeStampString = sdf.format(eventTimeLong);
 					
 					double longitude = Bytes.toDouble(result.getValue(Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME), Bytes.toBytes("longitudeColumn")));
 					double latitude = Bytes.toDouble(result.getValue(Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME), Bytes.toBytes("longitudeColumn")));
