@@ -37,7 +37,7 @@
 	    	<groupId>org.apache.logging.log4j</groupId>
 	        <artifactId>log4j-core</artifactId>
 	        <version>${log4j2.version}</version>  
-	      	<!--  <scope>provided</scope>  Needed for standalone invocation of simulator as assembly -->                 	
+	      	 <scope>provided</scope>
 		</dependency>   
 		<dependency>
 	    	<groupId>log4j</groupId>
