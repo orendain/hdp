@@ -89,9 +89,13 @@ public class TruckDemoService {
 	 * @return
 	 */
 	public Collection<TruckDriverViolationEvent> getLatestEventsForAllDrivers() {
+		LOG.debug("Made it here - A");
+
 		HConnection connection = null;
 		HTableInterface driverEventsTable = null;
 		HTableInterface driverEventsCountTable = null;
+
+		LOG.debug("Made it here - B");
 		
 		try {
 			LOG.debug("Made it here - 0");
