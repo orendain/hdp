@@ -116,8 +116,12 @@ public class TruckDemoService {
 				if(eventsMap.get(driverId) == null) {
 					int truckId = Bytes.toInt(result.getValue(Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME), Bytes.toBytes("truckId")));
 					String truckDriverEventKey = driverId + "|" + truckId;
-					
-					long eventTimeLong = Bytes.toLong(result.getValue(Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME), Bytes.toBytes("eventTime")));
+
+					byte[] XYZ = Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME);
+					byte[] ABC = Bytes.toBytes("eventTime");
+					byte[] ONE = result.getValue(XYZ, ABC);
+					long eventTimeLong = Bytes.toLong(ONE);
+
 					SimpleDateFormat sdf = new SimpleDateFormat();
 					String timeStampString = sdf.format(eventTimeLong);
 					
