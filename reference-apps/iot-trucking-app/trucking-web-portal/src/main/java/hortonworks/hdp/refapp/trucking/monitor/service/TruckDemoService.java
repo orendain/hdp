@@ -118,8 +118,12 @@ public class TruckDemoService {
 					String truckDriverEventKey = driverId + "|" + truckId;
 
 					byte[] XYZ = Bytes.toBytes(DRIVER_EVENTS_COLUMN_FAMILY_NAME);
+					LOG.info("a - " + XYZ.toString());
 					byte[] ABC = Bytes.toBytes("eventTime");
+					LOG.info("b - " + ABC.toString());
 					byte[] ONE = result.getValue(XYZ, ABC);
+					LOG.info("c - " + ONE.toString());
+					LOG.info("d - " + result);
 					long eventTimeLong = Bytes.toLong(ONE);
 
 					SimpleDateFormat sdf = new SimpleDateFormat();
